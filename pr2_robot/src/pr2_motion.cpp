@@ -10,6 +10,7 @@
 // Author: Harsh Pandya
 
 #include<pr2_robot/pr2_motion.h>
+#include <iostream>
 
 PR2Motion::PR2Motion(ros::NodeHandle nh)
   : nh_(nh),
@@ -50,7 +51,9 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
 
   // Publish messages to rviz
   visual_tools_ptr->trigger();
-  visual_tools_ptr->prompt("next step");
+  //visual_tools_ptr->prompt("next step");
+
+  std::cout << " **** waiting for enter 2 *****";
 
   /*
    * Collision Objects:
@@ -113,7 +116,7 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
 
   ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", (right_success & left_success) ? "" : "FAILED");
 
-  visual_tools_ptr->prompt("next step");
+  //visual_tools_ptr->prompt("next step");
 
   //Rotate in place to capture collision map from the sides
   std_msgs::Float64 world_joint_value;
@@ -121,17 +124,17 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
   world_joint_value.data = -1.57;
   world_joint_pub.publish(world_joint_value);
   ros::Duration(1.0).sleep();
-  visual_tools_ptr->prompt("next step");
+  //visual_tools_ptr->prompt("next step");
 
   world_joint_value.data = 1.57;
   world_joint_pub.publish(world_joint_value);
   ros::Duration(1.0).sleep();
-  visual_tools_ptr->prompt("next step");
+  //visual_tools_ptr->prompt("next step");
 
   world_joint_value.data = 0;
   world_joint_pub.publish(world_joint_value);
   ros::Duration(1.0).sleep();
-  visual_tools_ptr->prompt("next step");
+  //visual_tools_ptr->prompt("next step");
 
   //Target object pick pose
   std::vector<geometry_msgs::Pose> pose_list, drop_list, mesh_pose_list;
@@ -262,7 +265,7 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
     visual_tools_ptr->publishText(text_pose, "Reach Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
     visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
     visual_tools_ptr->trigger();
-    visual_tools_ptr->prompt("next step");
+    //visual_tools_ptr->prompt("next step");
 
     right_move_group.execute(right_arm_plan);
 
@@ -279,7 +282,7 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
     visual_tools_ptr->publishText(text_pose, "Pick Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
     visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
     visual_tools_ptr->trigger();
-    visual_tools_ptr->prompt("next step");
+    //visual_tools_ptr->prompt("next step");
 
     right_move_group.execute(right_arm_plan);
 
@@ -304,7 +307,7 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
     visual_tools_ptr->publishText(text_pose, "Reach Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
     visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
     visual_tools_ptr->trigger();
-    visual_tools_ptr->prompt("next step");
+    //visual_tools_ptr->prompt("next step");
 
     right_move_group.execute(right_arm_plan);
 
@@ -320,7 +323,7 @@ PR2Motion::PR2Motion(ros::NodeHandle nh)
     visual_tools_ptr->publishText(text_pose, "Drop Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
     visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
     visual_tools_ptr->trigger();
-    visual_tools_ptr->prompt("next step");
+    //visual_tools_ptr->prompt("next step");
 
     right_move_group.execute(right_arm_plan);
 

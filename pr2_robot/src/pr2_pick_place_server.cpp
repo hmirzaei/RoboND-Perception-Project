@@ -10,6 +10,7 @@
 // Author: Harsh Pandya
 
 #include<pr2_robot/pr2_pick_place_server.h>
+#include <iostream>
 
 PR2PickPlace::PR2PickPlace(ros::NodeHandle nh)
   : nh_(nh),
@@ -44,6 +45,8 @@ PR2PickPlace::PR2PickPlace(ros::NodeHandle nh)
   // Publish messages to rviz
   visual_tools_ptr->trigger();
 
+  std::cout << " **** waiting for enter ****";
+  std::getchar();
   /*
    * Collision Objects:
    * Create an object list and populate it with dropbox objects
@@ -191,7 +194,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Reach Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("Click Next");
+      // visual_tools_ptr->prompt("Click Next"); 
 
       right_move_group.execute(right_arm_plan);
 
@@ -209,7 +212,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Pick Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("Click Next");
+      // visual_tools_ptr->prompt("Click Next");
 
       right_move_group.execute(right_arm_plan);
 
@@ -234,7 +237,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Reach Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("Click Next");
+      // visual_tools_ptr->prompt("Click Next");
 
       right_move_group.execute(right_arm_plan);
 
@@ -254,7 +257,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Drop Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(right_arm_plan.trajectory_, right_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("Click Next");
+      // visual_tools_ptr->prompt("Click Next");
       right_move_group.execute(right_arm_plan);
 
 
@@ -281,7 +284,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Reach Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(left_arm_plan.trajectory_, left_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("Click Next");
+      // visual_tools_ptr->prompt("Click Next");
 
       left_move_group.execute(left_arm_plan);
 
@@ -298,7 +301,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Pick Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(left_arm_plan.trajectory_, left_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("next step");
+      // visual_tools_ptr->prompt("next step");
 
       left_move_group.execute(left_arm_plan);
 
@@ -323,7 +326,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Reach Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(left_arm_plan.trajectory_, left_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("next step");
+      // visual_tools_ptr->prompt("next step");
 
       left_move_group.execute(left_arm_plan);
 
@@ -344,7 +347,7 @@ bool PR2PickPlace::Routine(pr2_robot::PickPlace::Request &req,
       visual_tools_ptr->publishText(text_pose, "Drop Pose", rviz_visual_tools::WHITE, rviz_visual_tools::XLARGE);
       visual_tools_ptr->publishTrajectoryLine(left_arm_plan.trajectory_, left_joint_model_group);
       visual_tools_ptr->trigger();
-      visual_tools_ptr->prompt("next step");
+      // visual_tools_ptr->prompt("next step");
 
       left_move_group.execute(left_arm_plan);
 
