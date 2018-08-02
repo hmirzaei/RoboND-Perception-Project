@@ -24,7 +24,6 @@ from pr2_robot.srv import *
 from rospy_message_converter import message_converter
 import yaml
 
-
 # Helper function to get surface normals
 def get_normals(cloud):
     get_normals_prox = rospy.ServiceProxy('/feature_extractor/get_normals', GetNormals)
@@ -46,6 +45,23 @@ def send_to_yaml(yaml_filename, dict_list):
     with open(yaml_filename, 'w') as outfile:
         yaml.dump(data_dict, outfile, default_flow_style=False)
 
+# Make yaml frientdly dictionary
+def make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose):
+    yaml_dict = {}
+    yaml_dict["test_scene_num"] = test_scene_num.data
+    yaml_dict["arm_name"]  = arm_name.data
+    yaml_dict["object_name"] = object_name.data
+    yaml_dict["pick_pose"] = message_converter.convert_ros_message_to_dictionary(pick_pose)
+    yaml_dict["place_pose"] = message_converter.convert_ros_message_to_dictionary(place_pose)
+    return yaml_dict
+
+# Save yaml file to disk
+def send_to_yaml(yaml_filename, dict_list):
+    data_dict = {"object_list": dict_list}
+    with open(yaml_filename, 'w') as outfile:
+        yaml.dump(data_dict, outfile, default_flow_style=False)
+
+
 # Callback function for your Point Cloud Subscriber
 def pcl_callback(pcl_msg):
 
@@ -53,7 +69,6 @@ def pcl_callback(pcl_msg):
     cloud = ros_to_pcl(pcl_msg)
 
     # Voxel Grid filter
-
     # Create a VoxelGrid filter object for our input point cloud
     vox = cloud.make_voxel_grid_filter()
     
@@ -218,43 +233,51 @@ def pcl_callback(pcl_msg):
     # This is the output you'll need to complete the upcoming project!
     detected_objects_pub.publish(detected_objects)
 
-# Exercise-2 TODOs:
+    # get object_list and dropbox parameters
+    object_list_param = rospy.get_param('/object_list')
+    dropbox_param = rospy.get_param('/dropbox')
 
-    # TODO: Convert ROS msg to PCL data
+    # extract right and left centroids
+    for entry in dropbox_param:
+        if entry['name'] == 'right': right_centroid = entry['position']
+        if entry['name'] == 'left': left_centroid = entry['position']
     
-    # TODO: Statistical Outlier Filtering
+    # create lable and centroid arrays for the detected objects
+    labels = []
+    centroids = [] # to be list of tuples (x, y, z)
+    for object in detected_objects:
+        labels.append(object.label)
+        points_arr = ros_to_pcl(object.cloud).to_array()
+        centroids.append(np.mean(points_arr, axis=0)[:3])
 
-    # TODO: Voxel Grid Downsampling
+    # create yaml dictionary
+    dict_list = []
+    for i in range(0, len(object_list_param)):
+        # Populate various ROS messages
+        test_scene_num = Int32()
+        arm_name = String()
+        object_name = String()
+        pick_pose = Pose()
+        place_pose = Pose()
 
-    # TODO: PassThrough Filter
+        test_scene_num.data = 1
+        arm_name.data = 'right' if object_list_param[i]['group'] == 'green' else 'red'
+        object_name.data = object_list_param[i]['name']
+        for j in range(len(labels)):
+            if labels[j] == object_list_param[i]['name']:
+                pick_pose.position.x = float(centroids[j][0])
+                pick_pose.position.y = float(centroids[j][1])
+                pick_pose.position.z = float(centroids[j][2])
+                break;
+        place_position = right_centroid if object_list_param[i]['group'] == 'green' else left_centroid    
+        place_pose.position.x = float(place_position[0])
+        place_pose.position.y = float(place_position[1])
+        place_pose.position.z = float(place_position[2])
 
-    # TODO: RANSAC Plane Segmentation
-
-    # TODO: Extract inliers and outliers
-
-    # TODO: Euclidean Clustering
-
-    # TODO: Create Cluster-Mask Point Cloud to visualize each cluster separately
-
-    # TODO: Convert PCL data to ROS messages
-
-    # TODO: Publish ROS messages
-
-# Exercise-3 TODOs:
-
-    # Classify the clusters! (loop through each detected cluster one at a time)
-
-        # Grab the points for the cluster
-
-        # Compute the associated feature vector
-
-        # Make the prediction
-
-        # Publish a label into RViz
-
-        # Add the detected object to the list of detected objects.
-
-    # Publish the list of detected objects
+        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
+        dict_list.append(yaml_dict)
+    
+    send_to_yaml('output.yaml', dict_list)
 
     # Suggested location for where to invoke your pr2_mover() function within pcl_callback()
     # Could add some logic to determine whether or not your object detections are robust
@@ -310,7 +333,6 @@ if __name__ == '__main__':
     rospy.init_node('object_recognition', anonymous=True)
 
     # Create Subscribers
-#    pcl_sub = rospy.Subscriber("/camera/depth_registered/points", pc2.PointCloud2, pcl_callback, queue_size=1)
     pcl_sub = rospy.Subscriber("/pr2/world/points", pc2.PointCloud2, pcl_callback, queue_size=1)
 
     # Create Publishers
