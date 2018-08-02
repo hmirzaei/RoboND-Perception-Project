@@ -7,7 +7,7 @@ cp .inputrc ~
 echo 'alias emacs="emacs -nw"' >> ~/.bashrc
 echo 'export GAZEBO_MODEL_PATH=~/catkin_ws/src/RoboND-Perception-Project/pr2_robot/models:$GAZEBO_MODEL_PATH' >> ~/.bashrc
 echo 'source ~/catkin_ws/devel/setup.bash' >> ~/.bashrc
-echo 'Xft.dpi: 170' > ~/Xresources
+echo 'Xft.dpi: 170' > ~/.Xresources
 
 
 catkin_make
