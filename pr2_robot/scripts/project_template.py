@@ -218,8 +218,13 @@ def pcl_callback(pcl_msg):
 
         # Publish a label into RViz
         label_pos = list(white_cloud[pts_list[0]])
-        label_pos[2] += .4
-        object_markers_pub.publish(make_label(label,label_pos, index))
+        label_pos[2] += .23
+        label_marker = make_label(label,label_pos, index)
+        label_marker.color.a = 1
+        label_marker.color.r = 0
+        label_marker.color.g = 0
+        label_marker.color.b = 0.5
+        object_markers_pub.publish(label_marker)
 
         # Add the detected object to the list of detected objects.
         do = DetectedObject()
