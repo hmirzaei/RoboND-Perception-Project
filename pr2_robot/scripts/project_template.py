@@ -45,22 +45,6 @@ def send_to_yaml(yaml_filename, dict_list):
     with open(yaml_filename, 'w') as outfile:
         yaml.dump(data_dict, outfile, default_flow_style=False)
 
-# Make yaml frientdly dictionary
-def make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose):
-    yaml_dict = {}
-    yaml_dict["test_scene_num"] = test_scene_num.data
-    yaml_dict["arm_name"]  = arm_name.data
-    yaml_dict["object_name"] = object_name.data
-    yaml_dict["pick_pose"] = message_converter.convert_ros_message_to_dictionary(pick_pose)
-    yaml_dict["place_pose"] = message_converter.convert_ros_message_to_dictionary(place_pose)
-    return yaml_dict
-
-# Save yaml file to disk
-def send_to_yaml(yaml_filename, dict_list):
-    data_dict = {"object_list": dict_list}
-    with open(yaml_filename, 'w') as outfile:
-        yaml.dump(data_dict, outfile, default_flow_style=False)
-
 
 # Callback function for your Point Cloud Subscriber
 def pcl_callback(pcl_msg):
@@ -265,7 +249,7 @@ def pcl_callback(pcl_msg):
         pick_pose = Pose()
         place_pose = Pose()
 
-        test_scene_num.data = 1
+        test_scene_num.data = 3
         arm_name.data = 'right' if object_list_param[i]['group'] == 'green' else 'red'
         object_name.data = object_list_param[i]['name']
         for j in range(len(labels)):
@@ -282,7 +266,7 @@ def pcl_callback(pcl_msg):
         yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
         dict_list.append(yaml_dict)
     
-    send_to_yaml('output.yaml', dict_list)
+    send_to_yaml('output_3.yaml', dict_list)
 
     # Suggested location for where to invoke your pr2_mover() function within pcl_callback()
     # Could add some logic to determine whether or not your object detections are robust
